@@ -9,7 +9,7 @@ class maison
 {
 public:
     maison(int const &x, int const & y, int const & z);
-    maison(maison const & m)=default;
+    maison(maison const & m);
     bool operator==(maison const & m)const;
 
     static float distance(maison const & m1, maison const & m2);
@@ -20,8 +20,7 @@ public:
     int getId()const{return _id;}
     std::vector<maison> getArcSortant()const{return _arcSortant;}
 
-    //revoi faux si l'arc est deja la
-    bool ajouterArc(maison &m);
+    void ajouterArc(maison &m);
 
     std::string toString()const;
 private:

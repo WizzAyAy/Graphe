@@ -20,7 +20,7 @@ public:
     std::vector<maison> getLesMaisons()const{return _lesmaisons;}
 
     bool ajouter(maison const & m);
-    bool ajouterArcEntre(maison & depart, maison &arrive);
+    void ajouterArcEntre(maison & depart, maison &arrive);
     void afficher()const;
 
     void Astar(maison const & start, const maison &finale);
@@ -29,6 +29,9 @@ public:
     static int donneCourant(std::vector<AstarStruct> const & a);
     static bool tousVue(std::vector<AstarStruct> const & a);
 
+
+    void parcoursProfondeur();
+    static void explorer(const maison &m, std::vector<bool> &parcourus);
 private:
     std::vector<maison> _lesmaisons;
 };

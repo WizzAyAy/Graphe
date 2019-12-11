@@ -14,13 +14,12 @@ bool graphe::ajouter(const maison &m){
     else return false;
 }
 
-bool graphe::ajouterArcEntre(maison &depart, maison &arrive){
+void graphe::ajouterArcEntre(maison &depart, maison &arrive){
     auto it = std::find(_lesmaisons.begin(), _lesmaisons.end(), depart);
     if(it != _lesmaisons.end()) {
-            return ((*it).ajouterArc(arrive));
+        depart.ajouterArc(arrive);
     }
     //on a pas depart dans le graphe
-    else return false;
 }
 
 void graphe::afficher() const{
@@ -160,3 +159,24 @@ bool graphe::tousVue(const std::vector<AstarStruct> &a)
     }
     return true;
 }
+
+void graphe::parcoursProfondeur()
+{
+    std::cout << "Parcours en profondeur" << std::endl;
+    std::vector<bool> parcourus(_lesmaisons.size(),false);
+    for(maison const& noeud : _lesmaisons){
+        if(!parcourus.at(noeud.getId() - 1))
+            explorer(noeud, parcourus);
+    }
+}
+
+void graphe::explorer(maison const& m, std::vector<bool> &parcourus)
+{
+    parcourus.at(m.getId()-1) = true;
+    std::cout << m.toString() << std::endl;
+    for(maison const& fils : m.getArcSortant()){
+        if(!parcourus.at(fils.getId()-1))
+            explorer(fils, parcourus);
+    }
+}
+
