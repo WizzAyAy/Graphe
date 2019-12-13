@@ -15,8 +15,7 @@ bool graphe::ajouter(const maison &m){
 }
 
 void graphe::ajouterArcEntre(maison &depart, maison &arrive){
-    auto it = std::find(_lesmaisons.begin(), _lesmaisons.end(), depart);
-    if(it != _lesmaisons.end()) {
+    if(std::find(_lesmaisons.begin(), _lesmaisons.end(), depart) != _lesmaisons.end()) {
         depart.ajouterArc(arrive);
     }
     //on a pas depart dans le graphe
@@ -162,6 +161,7 @@ bool graphe::tousVue(const std::vector<AstarStruct> &a)
 
 void graphe::parcoursProfondeur()
 {
+    //fuck il faut des pointeurs sinon rien ne se met a jour fucked ...
     std::cout << "Parcours en profondeur" << std::endl;
     std::vector<bool> parcourus(_lesmaisons.size(),false);
     for(maison const& noeud : _lesmaisons){

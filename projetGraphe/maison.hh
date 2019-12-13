@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <ostream>
 
 
 /* cette classe maison est une classe qui represente des sommmets pour un graphe*/
@@ -30,3 +31,5 @@ private:
     //ce vector de maison reprenste les arcs sortant de ma maison
     std::vector<maison> _arcSortant;
 };
+
+std::ostream &operator<<(std::ostream &os, maison const & m);

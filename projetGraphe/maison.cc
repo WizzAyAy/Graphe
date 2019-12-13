@@ -36,3 +36,9 @@ void maison::ajouterArc(maison &m){
 std::string maison::toString() const{
 return "Maison " + std::to_string(getId()) + " : (" + std::to_string(getX()) + "," + std::to_string(getY()) + "," + std::to_string(getZ()) + ")" + std::to_string(getArcSortant().size()) + "v";
 }
+
+std::ostream &operator<<(std::ostream &os, const maison &m)
+{
+    os << m.toString();
+    return os;
+}
