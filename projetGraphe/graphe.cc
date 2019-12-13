@@ -4,7 +4,17 @@
 #include <iostream>
 #include <limits>
 #include <iomanip>
+#include <string>
 
+
+maison graphe::getMaison(const int &id) const
+{
+    for(auto x : _lesmaisons){
+        if(x.getId() == id) return x;
+    }
+    throw std::string("pas de maison avec cette id");
+    return maison(-99,99,-99);
+}
 
 bool graphe::ajouter(const maison &m){
     if(std::find(_lesmaisons.begin(), _lesmaisons.end(), m) == _lesmaisons.end()) {
@@ -15,9 +25,7 @@ bool graphe::ajouter(const maison &m){
 }
 
 void graphe::ajouterArcEntre(maison &depart, maison &arrive){
-    if(std::find(_lesmaisons.begin(), _lesmaisons.end(), depart) != _lesmaisons.end()) {
         depart.ajouterArc(arrive);
-    }
     //on a pas depart dans le graphe
 }
 
@@ -25,7 +33,7 @@ void graphe::afficher() const{
     for(auto sommet : _lesmaisons){
         std::cout << sommet.toString() << std::endl;
         for(auto arc : sommet.getArcSortant()){
-            std::cout << "   Vers -> " << arc.toString() << std::endl;
+            std::cout << "   Vers -> " << getMaison(arc).toString() << std::endl;
         }
     }
 }
@@ -40,18 +48,18 @@ void graphe::Astar(maison const & start, maison const & finale){
     std::vector<AstarStruct> temp = initAstar(start, finale);
 //    graphe::tousVue(temp) == false
 //    graphe::donneCourant(temp) != finale.getId()
-    while (graphe::tousVue(temp) == false) {
+    while (graphe::donneCourant(temp) != finale.getId()) {
         int intcourant = graphe::donneCourant(temp);
         for(auto courant : temp){
             if(courant.mais.getId() == intcourant){
                temp.at(courant.mais.getId()-1).estVue = true;
                 std::cout << "Maison courante : " << std::setprecision(2) << intcourant << std::endl;
                for(auto x2 : courant.mais.getArcSortant()){
-                   float poids = maison::distance(courant.mais, x2);
-                   std::cout << "   distance avec maison " << x2.getId() << " = " << poids << std::endl;
-                   if(poids + temp.at(courant.mais.getId()-1).cheminPlusCourt < temp.at(x2.getId()-1).cheminPlusCourt){
-                       std::cout << "   " << poids << " est plus petit que " << temp.at(x2.getId()-1).cheminPlusCourt << std::endl;
-                       temp.at(x2.getId()-1).cheminPlusCourt = poids + temp.at(courant.mais.getId()-1).cheminPlusCourt;
+                   float poids = maison::distance(courant.mais, getMaison(x2));
+                   std::cout << "   distance avec maison " << getMaison(x2).getId() << " = " << poids << std::endl;
+                   if(poids + temp.at(courant.mais.getId()-1).cheminPlusCourt < temp.at(x2-1).cheminPlusCourt){
+                       std::cout << "   " << poids << " est plus petit que " << temp.at(x2-1).cheminPlusCourt << std::endl;
+                       temp.at(x2-1).cheminPlusCourt = poids + temp.at(courant.mais.getId()-1).cheminPlusCourt;
                    }
                }
             }
@@ -159,24 +167,104 @@ bool graphe::tousVue(const std::vector<AstarStruct> &a)
     return true;
 }
 
+void graphe::arbreCouvrant()
+{
+    //la matrice est plus facile a utiliser ici
+    std::vector<std::vector<int>> matrice;
+    intMatrice(matrice, _lesmaisons.size());
+    creeMatrice(matrice);
+    afficherMatrice(matrice);
+    size_t indiceCol = 0;
+    size_t indiceLig = 0;
+    int min = 9999999;
+    std::vector<bool> parcourus(_lesmaisons.size(), false);
+    while (!tousVue(parcourus)) {
+        //recherhce de l'arrete avec le poids le plus court
+        for(size_t i = 0; i < matrice.size(); i++){
+            for(size_t j = 0; j < matrice.size(); j++){
+                if(matrice[i][j] < min && matrice[i][j] != 0){
+                    min  = matrice[i][j];
+                    indiceLig = i;
+                    indiceCol = j;
+                }
+            }
+        }
+        //on efface pour ne plus le reprendre
+        matrice[indiceLig][indiceCol] = 0;
+        std::cout << "Plus petite arrete entre " << indiceLig+1 << " et " << indiceCol+1 << " de poids " << min << std::endl;
+        if(parcourus[indiceCol] == false || parcourus[indiceLig] == false)
+                std::cout << "on ajoute a l'arbre !" << std::endl;
+        else
+            std::cout << "on ajoute pas a l'arbre !" << std::endl;
+        min = 999999;
+        parcourus[indiceCol] = true;
+        parcourus[indiceLig] = true;
+
+        //on cree plusieurs arbre courant dans ce cas :/ (des fois)
+    }
+}
+
+void graphe::intMatrice(std::vector<std::vector<int> > &m, const int &taille)
+{
+    std::vector<int> temp(taille, 0);
+    for(int i = 0; i < taille; i++){
+        m.push_back(temp);
+    }
+}
+
+void graphe::creeMatrice(std::vector<std::vector<int> > &m)
+{
+    for(auto x : _lesmaisons){
+        for(auto y : x.getArcSortant()){
+            m[x.getId()-1][y-1] = maison::distance(x, getMaison(y));
+        }
+    }
+}
+
+void graphe::afficherMatrice(const std::vector<std::vector<int> > &m)
+{
+    std::cout << std::setw(3) << "";
+    for(size_t i = 0; i < m.size(); i++)
+        std::cout << std::setw(3) << i << " ";
+    std::cout << std::endl;
+    for(size_t i = 0; i < m.size(); i++){
+        std::cout << std::setw(3) << i;
+        for(size_t j = 0; j < m.size(); j++){
+            std::cout << std::setw(3) << m[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+bool graphe::tousVue(const std::vector<bool> b)
+{
+    bool temp = true;
+    for(auto x : b)
+        temp = temp && x;
+    return temp;
+}
+
+
+
 void graphe::parcoursProfondeur()
 {
     //fuck il faut des pointeurs sinon rien ne se met a jour fucked ...
-    std::cout << "Parcours en profondeur" << std::endl;
+    std::cout << "Parcours en profondeur : ";
     std::vector<bool> parcourus(_lesmaisons.size(),false);
     for(maison const& noeud : _lesmaisons){
         if(!parcourus.at(noeud.getId() - 1))
             explorer(noeud, parcourus);
     }
+    std::cout << std::endl;
 }
 
 void graphe::explorer(maison const& m, std::vector<bool> &parcourus)
 {
     parcourus.at(m.getId()-1) = true;
-    std::cout << m.toString() << std::endl;
-    for(maison const& fils : m.getArcSortant()){
-        if(!parcourus.at(fils.getId()-1))
-            explorer(fils, parcourus);
+    std::cout << m.getId() << " ";
+    for(int fils : m.getArcSortant()){
+        if(!parcourus.at(fils-1))
+            explorer(getMaison(fils), parcourus);
     }
 }
 

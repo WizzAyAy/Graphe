@@ -19,17 +19,19 @@ public:
     int getY()const{return _y;}
     int getZ()const{return _z;}
     int getId()const{return _id;}
-    std::vector<maison> getArcSortant()const{return _arcSortant;}
+    std::vector<int> getArcSortant()const{return _arcSortant;}
+
 
     void ajouterArc(maison &m);
+    void ajouterArc(int &n);
 
     std::string toString()const;
 private:
     int _x, _y, _z;
     static int compteur;
     int _id;
-    //ce vector de maison reprenste les arcs sortant de ma maison
-    std::vector<maison> _arcSortant;
+    //ce vector de maison reprenste les arcs sortant de ma maison (il pointe vers les id des maisons)
+    std::vector<int> _arcSortant;
 };
 
 std::ostream &operator<<(std::ostream &os, maison const & m);

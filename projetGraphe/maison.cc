@@ -26,8 +26,14 @@ float maison::distance(const maison &m1, const maison &m2){
 }
 
 void maison::ajouterArc(maison &m){
-    if(std::find(_arcSortant.begin(), _arcSortant.end(), m) == _arcSortant.end()) {
-        _arcSortant.push_back(m);
+    if(std::find(_arcSortant.begin(), _arcSortant.end(), m.getId()) == _arcSortant.end()) {
+        _arcSortant.push_back(m.getId());
+    }
+}
+
+void maison::ajouterArc(int &n){
+    if(std::find(_arcSortant.begin(), _arcSortant.end(), n) == _arcSortant.end()) {
+        _arcSortant.push_back(n);
     }
 }
 

@@ -18,6 +18,7 @@ public:
     graphe() = default;
 
     std::vector<maison> getLesMaisons()const{return _lesmaisons;}
+    maison getMaison(int const & id)const;
 
     bool ajouter(maison const & m);
     void ajouterArcEntre(maison & depart, maison &arrive);
@@ -29,9 +30,14 @@ public:
     static int donneCourant(std::vector<AstarStruct> const & a);
     static bool tousVue(std::vector<AstarStruct> const & a);
 
+    void arbreCouvrant();
+    static void intMatrice(std::vector<std::vector<int> > &m, int const & taille);
+    void creeMatrice(std::vector<std::vector<int>> & m);
+    static void afficherMatrice(std::vector<std::vector<int>> const & m);
+    static bool tousVue(const std::vector<bool> b);
 
     void parcoursProfondeur();
-    static void explorer(const maison &m, std::vector<bool> &parcourus);
+    void explorer(const maison &m, std::vector<bool> &parcourus);
 private:
     std::vector<maison> _lesmaisons;
 };
