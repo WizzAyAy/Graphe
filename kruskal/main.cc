@@ -104,9 +104,11 @@ int main(int argc, char** argv){
   krustkalalgo G;
   if (argc != 2) std::cout << "Pas de fichier en paramêtre" << std::endl;
   else lecture(argv[1],G);
+  G.initNbArc();
   G.affichageMatrice();
 //  G.parcoursProfondeur();
 //  G.parcoursLargeur();
   std::cout << "adam" << std::endl;
+  G.krustkal();
   return 0;
 }

@@ -11,7 +11,12 @@ struct structinfo
 {
     int a;
     int b;
-    int poids;
+    double poids;
+};
+struct couple
+{
+   int a;
+   int b;
 };
 
 
@@ -29,20 +34,26 @@ public:
     void setOriente(bool o) {oriente = o;}
 
     void tri_arcs();
-    void inittabstruct (int nbs);
-    bool sera_cyclique(int const & a, int const & b);
-    int noeud_suivant(int const & a);
-    void initArbre(int nbS);
+    void inittabstruct ();
+    void affichertabstruct();
+    int nbarcs();
+    void initNbArc(){_nbarcs = nbarcs();}
+//    bool sera_cyclique(int const & a, int const & b);
+//    int noeud_suivant(int const & a);
+    void initArbre();
     void krustkal();
+    bool updategroupe(int a, int b);
+    static void affichercouple(std::vector<couple> const c);
 private :
   std::array<std::array<double,Max>, Max> matrice;
   std::array<bool,Max> parcourus;
   int nbSommets;
   bool oriente;
-
+  int _nbarcs;
+  std::vector<std::vector<int>> _groupes;
 
   std::array<structinfo, Max> _tabstruct;
-  std::array<std::array<double,Max>, Max> arbre;
-
+  //std::array<std::array<double,Max>, Max> arbre;
+  std::vector<std::vector<double>> arbre;
 
 };
