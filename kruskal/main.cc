@@ -79,7 +79,7 @@ int lecture(std::string input, krustkalalgo& G){
         std::vector<std::string> args;
         while ((i < ligne.length()) and (args.size()<1)) {
           std::string arg = "";
-          while ((i < ligne.length()) and (ligne[i]==' ')) ++i;
+          while  ((i < ligne.length()) and (ligne[i]==' ')) ++i;
           while ((i < ligne.length()) and (ligne[i]!=' ')) {arg+=ligne[i]; ++i;}
           if (arg.length() > 0) args.push_back(arg);
         }
