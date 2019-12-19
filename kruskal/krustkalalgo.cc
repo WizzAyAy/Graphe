@@ -47,14 +47,14 @@ void krustkalalgo::affichertabstruct()
 
     std::cout << "a : ";
     for (int i = 0; i < _nbarcs; ++i) {
-        std::cout << std::setw(4) << _tabstruct[i].a;
+        std::cout << std::setw(4) << _tabstruct[i].a + 1;
     }
     std::cout << std::endl;
     std::cout << std::endl;
 
     std::cout << "b : ";
     for (int i = 0; i < _nbarcs; ++i) {
-        std::cout << std::setw(4) << _tabstruct[i].b;
+        std::cout << std::setw(4) << _tabstruct[i].b + 1;
     }
     std::cout << std::endl;
     std::cout << std::endl;
@@ -83,17 +83,6 @@ int krustkalalgo::nbarcs()
 }
 
 
-//int krustkalalgo::noeud_suivant(const int &a) //donne le b  du noeud suivant de a
-//{
-//    int b(0);
-
-//    while(matrice[a][b] == inf)
-//        b++;
-//    if(b<=nbSommets)
-//        return b;
-//    else
-//        return inf;
-//}
 
 void krustkalalgo::initArbre()
 {
@@ -107,68 +96,77 @@ std::cout << "Arbre initialisé. " << std::endl;
 
 void krustkalalgo::krustkal()
 {
-    initArbre();
-    inittabstruct();
-    std::cout << "nombre d'arcs : " << _nbarcs << std::endl;
-    for (int i = 0; i < nbSommets; ++i) {
-        parcourus[i] = false;
-    }
-    tri_arcs();
-    affichertabstruct();
-
-
-
-    int estparcouru(0);
-    int boucle(1);
-
-    int a;
-    int b;
-    int poids;
-
-    a = _tabstruct[0].a;
-    b = _tabstruct[0].b;
-    poids = _tabstruct[0].poids;
-    arbre.at(a).at(b) = poids;
-
-
-
-
-    parcourus[a] = true;
-    parcourus[b] = true;
-    estparcouru += 2;
-    std::vector<couple> ordre;
-
-    while(estparcouru < nbSommets)
+    if(parcoursProfondeur())
     {
-        if(!updategroupe(_tabstruct[boucle].a, _tabstruct[boucle].b))
-        {
-            arbre.at(_tabstruct[boucle].a).at(_tabstruct[boucle].b) = _tabstruct[boucle].poids;
-            std::cout << _tabstruct[boucle].a + 1 << " --- " << _tabstruct[boucle].b + 1 << " de poids : " << _tabstruct[boucle].poids << std::endl;
-            std::cout << "Les sommets parcourus : ";
-//            for (int i = 0; i < nbSommets; ++i) {
-//                if (parcourus[i] == true)
-//                {
-//                    std::cout << i + 1 ;
-//                }
-//            }
-            couple temp = {_tabstruct[boucle].a +1,_tabstruct[boucle].b +1};
-            ordre.push_back(temp);
-            affichercouple(ordre);
-            std::cout << std::endl;
+        initArbre();
+        std::cout << std::endl;
+        inittabstruct();
+        std::cout << std::endl;
 
-            if(parcourus[_tabstruct[boucle].b] == false)
-            {
-                parcourus[_tabstruct[boucle].b] = true;
-                estparcouru++;
-            }
-            if(parcourus[_tabstruct[boucle].a] == false)
-            {
-                parcourus[_tabstruct[boucle].a] = true;
-                estparcouru++;
-            }
+        for (int i = 0; i < nbSommets; ++i) {
+            parcourus[i] = false;
         }
-        boucle++;
+        tri_arcs();
+        std::cout << std::endl;
+
+    //    affichertabstruct();
+
+
+
+        int estparcouru(0);
+        int boucle(1);
+
+        int a;
+        int b;
+        int poids;
+
+        a = _tabstruct[0].a;
+        b = _tabstruct[0].b;
+        poids = _tabstruct[0].poids;
+        arbre.at(a).at(b) = poids;
+
+
+
+
+        parcourus[a] = true;
+        parcourus[b] = true;
+        estparcouru += 2;
+        std::vector<couple> ordre;
+
+        while(estparcouru < nbSommets)
+        {
+            if(!updategroupe(_tabstruct[boucle].a, _tabstruct[boucle].b))
+            {
+                arbre.at(_tabstruct[boucle].a).at(_tabstruct[boucle].b) = _tabstruct[boucle].poids;
+                std::cout << _tabstruct[boucle].a + 1 << " --- " << _tabstruct[boucle].b + 1 << " de poids : " << _tabstruct[boucle].poids << std::endl;
+                std::cout << "Les sommets parcourus : ";
+
+                couple temp = {_tabstruct[boucle].a +1,_tabstruct[boucle].b +1};
+                ordre.push_back(temp);
+                affichercouple(ordre);
+                std::cout << std::endl;
+
+                if(parcourus[_tabstruct[boucle].b] == false)
+                {
+                    parcourus[_tabstruct[boucle].b] = true;
+                    estparcouru++;
+                }
+                if(parcourus[_tabstruct[boucle].a] == false)
+                {
+                    parcourus[_tabstruct[boucle].a] = true;
+                    estparcouru++;
+                }
+            }
+            boucle +=2;
+        }
+        std::cout << std::endl;
+        std::cout << "Arbre couvrant minimal de Krustkal : ";
+        affichercouple(ordre);
+        std::cout << std::endl;
+        std::cout << std::endl;
     }
+    else
+        std::cout << "Graphe non connexe. Ainsi Krustkal non effectué." << std::endl << std::endl;
 }
 
 
@@ -264,6 +262,33 @@ void krustkalalgo::affichercouple(const std::vector<couple> c)
 {
     for(auto i : c)
         std::cout << "(" << i.a << ", " << i.b << ") ";
+}
+
+bool krustkalalgo::parcoursProfondeur()
+{
+    for (int i=0; i<nbSommets; ++i){
+      parcourus[i]=false;
+    }
+
+    explorer(0);
+
+    int compteur(0);
+    for (int i = 0; i < nbSommets; ++i) {
+        if(parcourus[i] == true)
+            compteur++;
+    }
+    std::cout << std::endl;
+
+    return compteur == nbSommets;
+}
+
+void krustkalalgo::explorer(int s)
+{
+    parcourus[s]=true;
+    for (int i=0;i<nbSommets;++i) {
+      if (!parcourus[i] and (matrice[s][i]!=std::numeric_limits<double>::infinity()))
+        explorer(i);
+    }
 }
 
 
