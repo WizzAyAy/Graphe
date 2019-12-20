@@ -1,2 +1,2 @@
 projetGraphe = Astar (exo1)
-Krustal      = Krustal (exo3)  
+krustal      = Krustal (exo3)  Wow trop dur a trouver :D 
