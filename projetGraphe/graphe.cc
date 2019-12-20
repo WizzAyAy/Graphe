@@ -44,10 +44,8 @@ void graphe::Astar(maison const & start, maison const & finale){
     //chaque maison va se voir attribuer une distance a vol d'oiseau vers finale (x.distanceHeuristque)
     //chaque maison va aussi avoir, comme avec Diksjtra, un chemin plus court (x.cheminPlusCourt)
     //la maison courante sera choisit comme suit : on prend distanceHeuritique + cheminPlusCourt des "non vue"
-    std::cout << std::endl;
     std::vector<AstarStruct> temp = initAstar(start, finale);
-//    graphe::tousVue(temp) == false
-//    graphe::donneCourant(temp) != finale.getId()
+
     while (graphe::donneCourant(temp) != finale.getId()) {
         int intcourant = graphe::donneCourant(temp);
         for(auto courant : temp){
@@ -73,9 +71,47 @@ void graphe::Astar(maison const & start, maison const & finale){
         std::cout << "notre table finale est : " << std::endl;
         afficherAstar(temp);
         std::cout << std::endl;
-        std::cout << "la distance minimal entre la maison " << start.getId() << " et " << " la maison " << finale.getId();
+        std::cout << "la distance minimal entre la maison " << start.getId() << " et la maison " << finale.getId();
         std::cout << " est donc de " << temp.at(finale.getId()-1).cheminPlusCourt << std::endl;
 
+
+}
+
+void graphe::AstarTous(maison const & start, maison const & finale)
+{
+    //heuristique basée sur les distances entres les maisons a vol d'oiseau
+    //chaque maison va se voir attribuer une distance a vol d'oiseau vers finale (x.distanceHeuristque)
+    //chaque maison va aussi avoir, comme avec Diksjtra, un chemin plus court (x.cheminPlusCourt)
+    //la maison courante sera choisit comme suit : on prend distanceHeuritique + cheminPlusCourt des "non vue"
+    std::vector<AstarStruct> temp = initAstar(start, finale);
+
+    while (graphe::tousVue(temp) == false) {
+        int intcourant = graphe::donneCourant(temp);
+        for(auto courant : temp){
+            if(courant.mais.getId() == intcourant){
+               temp.at(courant.mais.getId()-1).estVue = true;
+                std::cout << "Maison courante : " << std::setprecision(2) << intcourant << std::endl;
+               for(auto x2 : courant.mais.getArcSortant()){
+                   float poids = maison::distance(courant.mais, getMaison(x2));
+                   std::cout << "   distance avec maison " << getMaison(x2).getId() << " = " << poids << std::endl;
+                   if(poids + temp.at(courant.mais.getId()-1).cheminPlusCourt < temp.at(x2-1).cheminPlusCourt){
+                       std::cout << "   " << poids << " est plus petit que " << temp.at(x2-1).cheminPlusCourt << std::endl;
+                       temp.at(x2-1).cheminPlusCourt = poids + temp.at(courant.mais.getId()-1).cheminPlusCourt;
+                   }
+               }
+            }
+        }
+        std::cout << std::endl;
+        std::cout << "table de l'avancement de Astar" << std::endl;
+        afficherAstar(temp);
+        std::cout << std::endl;
+        }
+
+        std::cout << "notre table finale est : " << std::endl;
+        afficherAstar(temp);
+        std::cout << std::endl;
+        std::cout << "la distance minimal entre la maison " << start.getId() << " et la maison " << finale.getId();
+        std::cout << " est donc de " << temp.at(finale.getId()-1).cheminPlusCourt << std::endl;
 
 }
 
@@ -166,85 +202,6 @@ bool graphe::tousVue(const std::vector<AstarStruct> &a)
     }
     return true;
 }
-
-void graphe::arbreCouvrant()
-{
-    //la matrice est plus facile a utiliser ici
-    std::vector<std::vector<int>> matrice;
-    intMatrice(matrice, _lesmaisons.size());
-    creeMatrice(matrice);
-    afficherMatrice(matrice);
-    size_t indiceCol = 0;
-    size_t indiceLig = 0;
-    int min = 9999999;
-    std::vector<bool> parcourus(_lesmaisons.size(), false);
-    while (!tousVue(parcourus)) {
-        //recherhce de l'arrete avec le poids le plus court
-        for(size_t i = 0; i < matrice.size(); i++){
-            for(size_t j = 0; j < matrice.size(); j++){
-                if(matrice[i][j] < min && matrice[i][j] != 0){
-                    min  = matrice[i][j];
-                    indiceLig = i;
-                    indiceCol = j;
-                }
-            }
-        }
-        //on efface pour ne plus le reprendre
-        matrice[indiceLig][indiceCol] = 0;
-        std::cout << "Plus petite arrete entre " << indiceLig+1 << " et " << indiceCol+1 << " de poids " << min << std::endl;
-        if(parcourus[indiceCol] == false || parcourus[indiceLig] == false)
-                std::cout << "on ajoute a l'arbre !" << std::endl;
-        else
-            std::cout << "on ajoute pas a l'arbre !" << std::endl;
-        min = 999999;
-        parcourus[indiceCol] = true;
-        parcourus[indiceLig] = true;
-
-        //on cree plusieurs arbre courant dans ce cas :/ (des fois)
-    }
-}
-
-void graphe::intMatrice(std::vector<std::vector<int> > &m, const int &taille)
-{
-    std::vector<int> temp(taille, 0);
-    for(int i = 0; i < taille; i++){
-        m.push_back(temp);
-    }
-}
-
-void graphe::creeMatrice(std::vector<std::vector<int> > &m)
-{
-    for(auto x : _lesmaisons){
-        for(auto y : x.getArcSortant()){
-            m[x.getId()-1][y-1] = maison::distance(x, getMaison(y));
-        }
-    }
-}
-
-void graphe::afficherMatrice(const std::vector<std::vector<int> > &m)
-{
-    std::cout << std::setw(3) << "";
-    for(size_t i = 0; i < m.size(); i++)
-        std::cout << std::setw(3) << i << " ";
-    std::cout << std::endl;
-    for(size_t i = 0; i < m.size(); i++){
-        std::cout << std::setw(3) << i;
-        for(size_t j = 0; j < m.size(); j++){
-            std::cout << std::setw(3) << m[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-}
-
-bool graphe::tousVue(const std::vector<bool> b)
-{
-    bool temp = true;
-    for(auto x : b)
-        temp = temp && x;
-    return temp;
-}
-
-
 
 void graphe::parcoursProfondeur()
 {
