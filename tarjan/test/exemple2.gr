@@ -1,0 +1,9 @@
+c negEdge graph
+
+o go
+v 5
+e 1 2 5
+e 2 3 4
+e 2 4 2
+e 3 5 -5
+e 5 4 2

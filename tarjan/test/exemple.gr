@@ -1,0 +1,15 @@
+c On peut faire des commentaires si la ligne commence par c (ou autre chose que o, v ou e)
+c Si la ligne commence par o, elle indique si le graphe est orient ́e (go) ou non (autre chose)
+c Si la ligne commence par v, elle indique le nombre de sommets (vertex)
+c Si la ligne commence par e, elle indique un arc (edge), avec 3  ́el ́ements, indice du sommet sortant, indice du sommet entrant et poids de l’arc
+c Si le graphe est non orient ́e, l’arc est entre 2 sommets, qu’importe l’ordre
+
+o g
+v 5
+e 1 2 2
+e 1 3 5
+e 2 4 8.5
+e 1 5 1
+e 3 5 3
+e 4 5 2
+e 3 4 -1

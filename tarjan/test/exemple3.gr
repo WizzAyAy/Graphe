@@ -1,0 +1,11 @@
+c negCycle graph
+
+o nope
+v 5
+e 1 2 2
+e 1 3 5
+e 2 4 8.5
+e 1 5 1
+e 3 5 3
+e 4 5 5
+e 3 4 -1

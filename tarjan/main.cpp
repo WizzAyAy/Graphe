@@ -105,7 +105,10 @@ int main(int argc, char** argv){
   if (argc != 2) std::cout << "Pas de fichier en paramêtre" << std::endl; 
   else lecture(argv[1],G);
   G.affichageMatrice();
+
   G.parcoursProfondeur();
-  G.parcoursLargeur();
+  G.tarjan();
+  G.affichageMatrice();
+//  G.parcoursLargeur();
   return 0;
 }

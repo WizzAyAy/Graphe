@@ -10,10 +10,11 @@ using noeud = int;
 
 
 struct infonoeud {
-    noeud a;
-    noeud b;
-    char plus;
-    char moins;
+    noeud sommet;
+//    char plus;
+//    char moins;
+    int v_num;
+    int v_num_accessible;
 };
 
 class Graphe{
@@ -26,6 +27,12 @@ class Graphe{
     //----------------------------------------------------------------------------------------//
 
     std::vector<infonoeud> _vectinfostruct;
+    std::vector<infonoeud> _element_partition;
+    std::vector<std::vector<infonoeud>> _partition;
+
+    int jointure_a;
+    int jointure_b;
+
   public :
 
     Graphe();
@@ -41,5 +48,5 @@ class Graphe{
 
     //________________________________________________________________________________________//
 
-    void init_vectinfostruct();
+    void tarjan();
 };
