@@ -29,6 +29,7 @@ class Graphe{
     std::vector<infonoeud> _vectinfostruct;
     std::vector<infonoeud> _element_partition;
     std::vector<std::vector<infonoeud>> _partition;
+    std::vector<int> _vectsommet;
 
     int jointure_a;
     int jointure_b;

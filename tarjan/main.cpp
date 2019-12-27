@@ -106,7 +106,7 @@ int main(int argc, char** argv){
   else lecture(argv[1],G);
   G.affichageMatrice();
 
-  G.parcoursProfondeur();
+//  G.parcoursProfondeur();
   G.tarjan();
   G.affichageMatrice();
 //  G.parcoursLargeur();

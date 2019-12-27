@@ -63,22 +63,11 @@ void Graphe::parcoursProfondeur(){
       if(!parcourus[i])
       {
           jointure_b = i;
-          if (i>0)
+          if (i>0) {
             matrice [jointure_a][jointure_b] = 1;
+            std::cout << std::endl << "Jointure entre : " << jointure_a +1 << ", " << jointure_b +1 << std::endl;
+          }
           explorer(i);
-          int compteur(0);
-
-          for (int i = 0; i < nbSommets; ++i) {
-              if (parcourus[i] == true)
-                  compteur++;
-          }
-          if(compteur == nbSommets)
-              toutestparcouru = true;
-          if(toutestparcouru == false)
-          {
-              std::cout << std::endl << "nouveau tour" << std::endl;
-              std::cout << "jointure a : " << jointure_a +1 << ", jointure b : " << jointure_b +1 << std::endl;
-          }
       }
 
 
@@ -92,6 +81,7 @@ void Graphe::parcoursProfondeur(){
 
 void Graphe::explorer(int s){
   parcourus[s]=true;
+  _vectsommet.push_back(s);
 
   bool onarretetout(false);
   bool toutestparcouru(false);
@@ -123,12 +113,12 @@ void Graphe::explorer(int s){
   _vectinfostruct.at(_vectinfostruct.size()-1).v_num_accessible = s;
 
   std::cout << std::endl << "sommet : " << _vectinfostruct.at(_vectinfostruct.size()-1).sommet  + 1 << ", ";
-  std::cout << std::endl << "vnum : " << _vectinfostruct.at(_vectinfostruct.size()-1).v_num  + 1 << ", ";
-  std::cout << std::endl << "vnum accessible : " << _vectinfostruct.at(_vectinfostruct.size()-1).v_num_accessible  + 1 << ", ";
+  std::cout << "vnum : " << _vectinfostruct.at(_vectinfostruct.size()-1).v_num  + 1 << ", ";
+  std::cout << "vnum accessible : " << _vectinfostruct.at(_vectinfostruct.size()-1).v_num_accessible  + 1 << ", ";
 
 
-  std::cout << "S" << s+1 << " " << std::endl;
-  std::cout << "------------------------------" << std::endl;
+  std::cout << std::endl << "=== S" << s+1 << " " << std::endl;
+  std::cout << "==========================================================" << std::endl;
   for (int i=0;i<nbSommets;++i) {                                                   //A CHANGER POUR ORIENTE
        if((matrice[s][i]!=std::numeric_limits<double>::infinity())) {
            compteur = 0;
@@ -162,7 +152,10 @@ void Graphe::explorer(int s){
                     toutestparcouru = true;
 
                 if(!toutestparcouru) {
-                    std::cout << std::endl << "--------------------- > On a un cycle ici : " << s + 1 << ", " << i + 1 << std::endl; //s = 2 & i = 4
+                    std::cout << std::endl <<"------- > On a un cycle ici : " << s + 1 << ", " << i + 1 << std::endl; //s = 2 & i = 4
+                    std::cout << std::endl;
+
+
                     for (int k = i; k >= s; --k) {
 
                         _vectinfostruct.at(k).v_num_accessible = _vectinfostruct.at(s).v_num_accessible;
@@ -221,6 +214,7 @@ void Graphe::parcoursLargeur(){
 
 void Graphe::tarjan()
 {
+    parcoursProfondeur();
     bool connexe(false);
     for(auto i : _partition)
     {
@@ -230,6 +224,11 @@ void Graphe::tarjan()
         }
         std::cout << std::endl << std::endl;
     }
+
+    std::cout << "_-_-_-_ Les sommets parcourus dans l'ordre : ";
+    for(int i = 0; i <nbSommets; i++)
+        std::cout << "  " << _vectsommet.at(i) + 1 << "  ";
+    std::cout << std::endl << std::endl << std::endl;
 }
 
 
